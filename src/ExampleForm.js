@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { throwStatement } from '@babel/types';
+import {withRouter} from 'react-router-dom'
 
 export class ExampleForm extends Component {
     constructor(props) {
@@ -26,6 +26,7 @@ export class ExampleForm extends Component {
         // data.name = this.formName.current.value
         // data.age = this.formAge.current.value
         this.props.addPerson(this.state)
+        this.props.history.push('/')
     }
     render() {
         console.log(this.state)
@@ -41,4 +42,4 @@ export class ExampleForm extends Component {
     }
 }
 
-export default ExampleForm
+export default withRouter(ExampleForm)

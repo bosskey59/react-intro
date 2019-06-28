@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
+import { BrowserRouter as Router, Route, Link, Switch} from "react-router-dom";
+
 import Person from './person'
 import ExampleForm from './ExampleForm'
+import Welcome from './Welcome'
 
 
 export default class List extends Component {
@@ -39,20 +42,14 @@ export default class List extends Component {
     //     }
     // }
 
-    componentDidUpdate(prevProps, prevState, snapshot){
-       console.log("component did update")
-    }
+    // componentDidUpdate(prevProps, prevState, snapshot){
+    //    console.log("component did update")
+    // }
 
 
 
     click = (id) =>{
         console.log(id)
-        // const filteredPpl = this.state.people.filter(person =>(
-        //  person.id !== id   
-        // ))
-        // this.setState({
-        //     people:filteredPpl
-        // })
         this.setState((prevState) => {
             const filteredPpl = prevState.people.filter(person =>(
                 person.id !== id   
@@ -62,8 +59,9 @@ export default class List extends Component {
 
     }
     addPerson = (data) =>{
-        data.id = this.state.people.length+1
+        
         this.setState((prevState) => {
+            data.id = prevState.people.length + 1
             const addedPeople = [...prevState.people, data]
             return {people:addedPeople};
           })
@@ -72,14 +70,23 @@ export default class List extends Component {
     render() {
         console.log("rendering List Component")
         return (
-            <div className="hello">
-            <ul>
-             { this.state.people.map((person) => <Person {...person} key={person.id} click={this.click}/>)}
-            </ul>
-            <ExampleForm addPerson={this.addPerson}/>
-            <h1>{this.state.language}</h1>
-            </div>
+            <Router>
+                 <div className="hello">
+                <Link to="/"><button>Home</button></Link>
+                <Link to="/new"><button>Add a Person</button></Link>
+                <Switch>
+                    <Route path="/person/:id" render={({ match })=>(<Person click={this.click} {...this.state.people.find(p => p.id === parseInt(match.params.id))} />)} />
+                    <Route path="/new" render={()=>(<ExampleForm addPerson={this.addPerson}/>)} />  
+                    <Route path="/" render={()=>(<Welcome people={this.state.people} click={this.click}/>)} /> 
+                </Switch>
+
+
+                    
+                    {/* <ExampleForm addPerson={this.addPerson}/> */}
+                </div>
+            </Router>
         )
     }
 }
+
 
